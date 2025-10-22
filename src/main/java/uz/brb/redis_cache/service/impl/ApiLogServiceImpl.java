@@ -2,7 +2,6 @@ package uz.brb.redis_cache.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.brb.redis_cache.dto.response.Response;
