@@ -9,6 +9,7 @@ import uz.brb.redis_cache.dto.response.Response;
 import uz.brb.redis_cache.entity.ApiLog;
 import uz.brb.redis_cache.repository.ApiLogRepository;
 import uz.brb.redis_cache.service.ApiLogService;
+import uz.brb.redis_cache.service.logic.RedisService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,7 +21,7 @@ import static uz.brb.redis_cache.util.Util.localDateTimeFormatter;
 @RequiredArgsConstructor
 public class ApiLogServiceImpl implements ApiLogService {
     private final ApiLogRepository apiLogRepository;
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisService redisService;
     private static final String CACHE_KEY = "apiLogs";
 
     @Override
@@ -45,13 +46,13 @@ public class ApiLogServiceImpl implements ApiLogService {
     @Override
     public Response<?> getAll(Pageable pageable) {
         List<ApiLog> apiLogs = apiLogRepository.findAll(pageable).getContent();
-        redisTemplate.opsForValue().set(CACHE_KEY, apiLogs, 10, TimeUnit.MINUTES);
+        redisService.saveData(CACHE_KEY, apiLogs, 10, TimeUnit.MINUTES);
         return Response.builder()
                 .code(HttpStatus.OK.value())
                 .status(HttpStatus.OK)
                 .success(true)
                 .message("ApiLog list successfully found")
-                .data(apiLogs)
+                .data(redisService.getData(CACHE_KEY))
                 .timestamp(localDateTimeFormatter(LocalDateTime.now()))
                 .build();
     }
