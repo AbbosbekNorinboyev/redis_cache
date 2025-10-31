@@ -11,6 +11,7 @@ import uz.brb.redis_cache.service.ApiLogService;
 import uz.brb.redis_cache.service.logic.RedisCacheService;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -45,7 +46,7 @@ public class ApiLogServiceImpl implements ApiLogService {
     public Response<?> getAll(Pageable pageable) {
         List<ApiLog> apiLogs = apiLogRepository.findAll(pageable).getContent();
         for (ApiLog apiLog : apiLogs) {
-            redisCacheService.saveData(String.valueOf(apiLog.getId()), apiLogs, 10, TimeUnit.MINUTES);
+            redisCacheService.saveData(String.valueOf(apiLog.getId()), apiLog, 10, TimeUnit.MINUTES);
         }
         List<Object> redisCacheAllData = redisCacheService.getAllData();
         return Response.builder()
