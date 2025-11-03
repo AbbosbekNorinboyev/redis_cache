@@ -40,7 +40,7 @@ public class ApiLogServiceImpl implements ApiLogService {
     }
 
     @Override
-    @Cacheable(value = "posts", key = "#root.methodName")
+    @Cacheable(value = "apiLogs", key = "#root.methodName")
     public Response<?> getAll(Pageable pageable) {
         List<ApiLog> apiLogs = apiLogRepository.findAll(pageable).getContent();
         return Response.builder()
